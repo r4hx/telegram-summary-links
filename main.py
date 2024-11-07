@@ -21,12 +21,8 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
 @bot.message_handler(
-    func=lambda message: bool(
-        re.search(
-            r"https?://",
-            message.text,
-        )
-    )
+    func=lambda message: bool(re.search(r"https?://", message.text))
+    and message.chat.id == TELEGRAM_GROUP_ID
 )
 def handle_links(message):
     links = re.findall(r"https?://\S+", message.text)
