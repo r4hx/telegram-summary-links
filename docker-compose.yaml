@@ -1,0 +1,13 @@
+services:
+
+
+  summary:
+    image: summary
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: summary
+    env_file:
+      - .env
+    restart: always
+    command: /bin/bash -c "python3 main.py"
