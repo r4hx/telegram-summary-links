@@ -11,6 +11,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.DEBUG,
 )
+
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_GROUP_ID = os.getenv("TELEGRAM_GROUP_ID")
 
@@ -38,4 +39,4 @@ def handle_links(message):
                 sleep(5)
 
 
-bot.polling()
+bot.polling(non_stop=True)

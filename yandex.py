@@ -4,7 +4,10 @@ import os
 import httpx
 from bs4 import BeautifulSoup
 
-logging.getLogger("httpx").setLevel(logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.DEBUG,
+)
 
 YANDEX_ENDPOINT = os.getenv("YANDEX_ENDPOINT")
 assert YANDEX_ENDPOINT, "YANDEX_ENDPOINT is not set"
