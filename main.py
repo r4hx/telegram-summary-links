@@ -32,7 +32,7 @@ def handle_links(message):
             try:
                 text = get_summary_from_yandex(url)
                 if text:
-                    bot.send_message(message.chat.id, text)
+                    bot.reply_to(message, text)
                     break
             except Exception:
                 sleep(5)
