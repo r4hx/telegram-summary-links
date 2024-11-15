@@ -27,15 +27,18 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 def handle_links(message):
     links = re.findall(r"https?://\S+", message.text)
     for link in links:
-        url = send_url_to_yandex(link)
-        for _ in range(10):
-            try:
-                text = get_summary_from_yandex(url)
-                if text:
-                    bot.reply_to(message, text)
-                    break
-            except Exception:
-                sleep(5)
+        try:
+            url = send_url_to_yandex(link)
+            for _ in range(10):
+                try:
+                    text = get_summary_from_yandex(url)
+                    if text:
+                        bot.reply_to(message, text)
+                        break
+                except Exception:
+                    sleep(5)
+        except Exception as e:
+            logging.error(f"Error: {e}")
 
 
 bot.polling(non_stop=True)

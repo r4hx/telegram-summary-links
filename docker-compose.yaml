@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    container_name: summary
+    container_name: telegram-summary-bot
     env_file:
       - .env
     restart: always
