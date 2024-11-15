@@ -18,14 +18,21 @@ http = httpx.Client(timeout=15, follow_redirects=True)
 
 
 def send_url_to_yandex(url: str) -> str:
+    """
+    Отправляет ссылку на статью в Яндекс 300
+    """
     response = http.post(
         url=YANDEX_ENDPOINT,
         json={"article_url": url},
         headers={"Authorization": f"OAuth {YANDEX_TOKEN}"},
     )
 
+    logging.info(f"Response status code: {response.status_code=}")
+
     if response.status_code != 200:
         raise Exception("Не удалось отправить ссылку на статью в Яндекс 300")
+
+    logging.info(f"Response json: {response.json()}")
 
     sharing_url = response.json().get("sharing_url")
     if not sharing_url:
@@ -35,7 +42,12 @@ def send_url_to_yandex(url: str) -> str:
 
 
 def get_summary_from_yandex(url: str) -> dict:
+    """
+    Получает пересказ статьи из Яндекс 300
+    """
     response = http.get(url=url)
+
+    logging.info(f"Response status code: {response.status_code=}")
 
     if response.status_code != 200:
         raise Exception("Не удалось получить пересказ статьи из Яндекс 300")
@@ -46,6 +58,9 @@ def get_summary_from_yandex(url: str) -> dict:
 
 
 def extract_summary(html_content: str) -> str:
+    """
+    Извлекает краткое содержание статьи
+    """
     soup = BeautifulSoup(html_content, "html.parser")
     meta_tag = soup.find("meta", attrs={"name": "description"})
     if meta_tag and "content" in meta_tag.attrs:
