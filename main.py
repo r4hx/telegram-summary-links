@@ -5,7 +5,9 @@ from time import sleep
 
 import telebot
 
+from gist import delete_gist_in_background, get_raw_gist_url_from_text
 from yandex import get_summary_from_yandex, send_url_to_yandex
+from youtube import extract_video_id, get_video_transcript
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -28,7 +30,8 @@ def handle_links(message):
     links = re.findall(r"https?://\S+", message.text)
     for link in links:
         try:
-            url = send_url_to_yandex(link)
+            result_link = is_youtube_link(link)
+            url = send_url_to_yandex(result_link)
             for _ in range(10):
                 try:
                     text = get_summary_from_yandex(url)
@@ -39,6 +42,26 @@ def handle_links(message):
                     sleep(5)
         except Exception as e:
             logging.error(f"Error: {e}")
+
+
+def is_youtube_link(link):
+    if re.match(r"(https?://)?(www\.)?youtube\.com/", link):
+        url = create_gist_for_youtube_link(link)
+        delete_gist_in_background(gist_id=url["gist_id"])
+        return url["raw_url"]
+    elif re.match(r"(https?://)?(www\.)?youtu\.be/", link):
+        url = create_gist_for_youtube_link(link)
+        delete_gist_in_background(gist_id=url["gist_id"])
+        return url["raw_url"]
+    else:
+        return link
+
+
+def create_gist_for_youtube_link(link):
+    video_id = extract_video_id(link)
+    transcript = get_video_transcript(video_id)
+    result = get_raw_gist_url_from_text(transcript)
+    return result
 
 
 bot.polling(non_stop=True)
